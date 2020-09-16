@@ -76,6 +76,14 @@ subcommand are :
         if args.term is not None:
             get_genes(self._get_conn(), args.term)
 
+    def disease_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="show diseases of an HPO term")
+        parser.add_argument("term", type=str)
+        args = parser.parse_args(argv)
+
+        if args.term is not None:
+            get_diseases(self._get_conn(), args.term)
+
     def _get_conn(self):
         dbfile = os.path.join(os.path.expanduser("~"), ".hpotools", "hpo.db")
         if not os.path.exists(dbfile):

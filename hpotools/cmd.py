@@ -52,4 +52,18 @@ ORDER BY genes.name
         print(record[0])
 
 
+def get_diseases(conn: sqlite3.Connection, term: str):
+    q = conn.execute(
+        f"""SELECT diseases.database_id,  diseases.name FROM terms , diseases
+INNER JOIN disease_has_terms ON disease_has_terms.term_id = terms.id and disease_has_terms.disease_id = diseases.id
+
+WHERE terms.hpo = "{term}"
+        """
+    )
+
+    for record in q:
+        database, name = record
+        print(database, name, sep="\t")
+
+
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3864022/
