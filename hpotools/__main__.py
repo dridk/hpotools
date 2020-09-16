@@ -5,7 +5,7 @@ import urllib.request
 import sqlite3
 from .cmd import *
 
-HPO_URL = "https://github.com/dridk/hpo2sqlite/releases/download/2018-03-08/hpo.db"
+HPO_URL = "https://github.com/dridk/hpo2sqlite/releases/download/latest/hpo.db"
 
 
 class HpoParser(object):
