@@ -19,6 +19,7 @@ subcommand are :
     init   Init sqlite database path
     terms  query hpo terms 
     search search a terms according his name
+    gene   get gene of a terms 
             """,
         )
 
@@ -66,6 +67,14 @@ subcommand are :
 
         if args.query is not None:
             get_terms_by_desc(self._get_conn(), args.query)
+
+    def gene_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="show genes of an HPO term")
+        parser.add_argument("term", type=str)
+        args = parser.parse_args(argv)
+
+        if args.term is not None:
+            get_genes(self._get_conn(), args.term)
 
     def _get_conn(self):
         dbfile = os.path.join(os.path.expanduser("~"), ".hpotools", "hpo.db")
