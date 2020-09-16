@@ -3,7 +3,7 @@ import sys
 import os
 import urllib.request
 import sqlite3
-from .cmd import get_terms
+from .cmd import *
 
 HPO_URL = "https://github.com/dridk/hpo2sqlite/releases/download/2018-03-08/hpo.db"
 
@@ -18,7 +18,7 @@ subcommand are :
 
     init   Init sqlite database path
     terms  query hpo terms 
-
+    search search a terms according his name
             """,
         )
 
@@ -58,6 +58,14 @@ subcommand are :
             showtree=args.showtree,
             maxdepth=args.maxdepth,
         )
+
+    def search_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="Search a  terms")
+        parser.add_argument("query", type=str)
+        args = parser.parse_args(argv)
+
+        if args.query is not None:
+            get_terms_by_desc(self._get_conn(), args.query)
 
     def _get_conn(self):
         dbfile = os.path.join(os.path.expanduser("~"), ".hpotools", "hpo.db")

@@ -27,5 +27,18 @@ INNER JOIN terms ON terms.id = nodes.term_id"""
                 print(hpo, name, sep="\t")
 
 
-def get_diseases(conn: sqlite3.Connection, terms: list):
+def get_terms_by_desc(conn: sqlite3.Connection, query: str):
+    q = conn.execute(
+        f"""SELECT terms.hpo, terms.name FROM terms WHERE terms.name LIKE '%{query}%' """
+    )
+
+    for record in q:
+        hpo, name = record
+        print(hpo, name, sep="\t")
+
+
+def get_genes(conn: sqlite3.Connection, terms: list):
     pass
+
+
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3864022/
