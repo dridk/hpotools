@@ -3,6 +3,7 @@ import sys
 import os
 import urllib.request
 import sqlite3
+import json
 from .cmd import *
 
 HPO_URL = "https://github.com/dridk/hpo2sqlite/releases/download/latest/hpo.db"
@@ -16,10 +17,16 @@ class HpoParser(object):
             usage="""hpotools <command> [<args>] 
 subcommand are : 
 
-    init   Init sqlite database path
-    terms  query hpo terms 
-    search search a terms according his name
-    gene   get gene of a terms 
+    init             Init sqlite database path
+    terms            query hpo terms 
+    search           search a terms according his name
+    gene             get gene of a terms 
+    lca              get last common ancestor between two terms 
+    term_similarity  Compute similarity between two terms  
+    phen_similarity  Compute similarity between two phenotypes
+    matrix           Compute similarity matrix between phenotypes
+
+
             """,
         )
 
@@ -83,6 +90,53 @@ subcommand are :
 
         if args.term is not None:
             get_diseases(self._get_conn(), args.term)
+
+
+    def lca_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="get last common ancestors between two hpo terms")
+        parser.add_argument("first", type=str)
+        parser.add_argument("second", type=str)
+        args = parser.parse_args(argv)
+
+        if args.first is not None and args.second is not None:
+            conn = self._get_conn()
+            term_id = get_common_ancestors(conn, args.first, args.second)
+            result = conn.execute(f"SELECT terms.hpo, terms.name FROM terms WHERE id = {term_id}").fetchone()
+            print(*result, sep="\t")
+
+    def term_similarity_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="Compute similarity between two hpo terms ")
+        parser.add_argument("first", type=str)
+        parser.add_argument("second", type=str)
+        parser.add_argument("-m", "--metrics", type=str, choices = ["resnik"], default="resnik")
+        args = parser.parse_args(argv)        
+
+        if args.metrics == "resnik":
+            print("Resnik score:" , get_resnik_score(self._get_conn(), args.first, args.second))
+
+    def phen_similarity_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="Compute similarity between two phenotypes ")
+        parser.add_argument("-a","--first", type=str)
+        parser.add_argument("-b","--second",type=str)
+        parser.add_argument("-m", "--metrics", type=str, choices = ["resnik"], default="resnik")
+        args = parser.parse_args(argv) 
+
+
+        print("Score:" , get_phenotype_similarity(self._get_conn(), set(args.first.split(",")), set(args.second.split(",")), metrics = args.metrics))
+
+        #print("Resnik score:" , get_term_similarity(self._get_conn(), args.first, args.second, metrics = args.metrics))
+
+    def matrix_cmd(self, argv):
+        parser = argparse.ArgumentParser(description="Compute similarity matrix between two sets of words ")
+        parser.add_argument("file", type=argparse.FileType("r"))
+        parser.add_argument("-m", "--metrics", type=str, choices = ["resnik"], default="resnik")
+        args = parser.parse_args(argv)        
+
+        if args.metrics == "resnik":
+            data = json.load(args.file)
+            print(get_pairwise_matrix(self._get_conn(), data, args.metrics))
+            #print("Resnik score:" , get_resnik_score(self._get_conn(), args.first, args.second))
+
 
     def _get_conn(self):
         dbfile = os.path.join(os.path.expanduser("~"), ".hpotools", "hpo.db")
