@@ -3,6 +3,7 @@ import math
 from scipy.spatial.distance import pdist, squareform
 import numpy as np
 import pandas as pd 
+import vcf
 
 def get_terms(conn: sqlite3.Connection, parent: str, maxdepth=0, showtree=True):
 
@@ -158,7 +159,46 @@ def get_pairwise_matrix(conn: sqlite3.Connection, pheno: dict , metrics="resnik"
 
     return df  
 
-   
+
+def annotate_vcf(conn: sqlite3.Connection, input_file: str, output_file:str, max_freq = 0.01, use_name = False):
+
+
+    # get total diseases 
+    total_disease =int(conn.execute("SELECT max(id) FROM diseases").fetchone()[0])
+
+
+    reader = vcf.Reader(filename=input_file)
+    writer = vcf.Writer(open(output_file, 'w'), reader)
+
+    for record in reader:
+        genes = set()
+        if "ANN" in record.INFO:
+            for sub_record in record.INFO["ANN"]:
+                fields = sub_record.split("|")
+                # gene field is in 3 column : 
+                genes.add(fields[3])
+
+        # query hpo terms related to genes 
+
+        sql_field = "terms.name" if use_name else "terms.hpo"
+        gene_filter = "(" + ",".join(f"'{g}'" for g in genes) + ")"
+
+        sql = f"""SELECT {sql_field}, CAST(terms.disease_count AS FLOAT) / {total_disease} as freq  FROM genes
+LEFT JOIN genes_has_terms ON genes.id = genes_has_terms.gene_id
+LEFT JOIN terms ON genes_has_terms.term_id = terms.id
+WHERE genes.name IN {gene_filter} AND freq < {max_freq}"""
+
+        terms = []
+        for sql_record in conn.execute(sql):
+            terms.append(sql_record[0])
+
+        # write hpo terms 
+        record.INFO["HpoTools"] = ";".join(terms)
+
+
+
+        writer.write_record(record)
+
 
 
 

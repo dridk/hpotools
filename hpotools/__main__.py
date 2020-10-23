@@ -25,6 +25,7 @@ subcommand are :
     term_similarity  Compute similarity between two terms  
     phen_similarity  Compute similarity between two phenotypes
     matrix           Compute similarity matrix between phenotypes
+    annotate         Annotate a vcf file previously annotated with snpeff or VEP
 
 
             """,
@@ -136,6 +137,17 @@ subcommand are :
             data = json.load(args.file)
             print(get_pairwise_matrix(self._get_conn(), data, args.metrics))
             #print("Resnik score:" , get_resnik_score(self._get_conn(), args.first, args.second))
+
+    def annotate_cmd(self,argv):
+        parser = argparse.ArgumentParser(description="Annotate a VCF file previously annotated with snpEff or VEP")
+        parser.add_argument("-i", "--input", help="annotated vcf file input", type=str)
+        parser.add_argument("-o","--output", type=str, help = "annotated vcf file output")
+        parser.add_argument("-f","--max-freq", type=str,help="diseases frequency. A low frequence mean more specificity",default = 0.01)
+        parser.add_argument("-n","--use-name", action='store_true', help="use HPO name instead of HPO identifier", default = False)
+        args = parser.parse_args(argv)
+        print(args)
+        annotate_vcf(self._get_conn(), args.input, args.output, max_freq = args.max_freq, use_name = args.use_name)
+
 
 
     def _get_conn(self):
