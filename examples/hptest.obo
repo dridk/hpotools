@@ -1,0 +1,97 @@
+format-version: 1.2
+data-version: hp/releases/2020-08-11
+saved-by: Peter Robinson, Sebastian Koehler, Sandra Doelken, Chris Mungall, Melissa Haendel, Nicole Vasilevsky, Monarch Initiative, et al.
+subsetdef: hposlim_core "Core clinical terminology"
+subsetdef: secondary_consequence "Consequence of a disorder in another organ system."
+synonymtypedef: abbreviation "abbreviation"
+synonymtypedef: layperson "layperson term"
+synonymtypedef: obsolete_synonym "discarded/obsoleted synonym"
+synonymtypedef: plural_form "plural form"
+synonymtypedef: uk_spelling "UK spelling"
+default-namespace: human_phenotype
+remark: Please see license of HPO at http://www.human-phenotype-ontology.org
+ontology: hp.obo
+property_value: http://purl.org/dc/elements/1.1/creator "Human Phenotype Ontology Consortium" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Monarch Initiative" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Peter Robinson" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Sebastian Köhler" xsd:string
+property_value: http://purl.org/dc/elements/1.1/description "The Human Phenotype Ontology (HPO) provides a standardized vocabulary of phenotypic abnormalities and clinical features encountered in human disease." xsd:string
+property_value: http://purl.org/dc/elements/1.1/rights "Peter Robinson, Sebastian Koehler, The Human Phenotype Ontology Consortium, and The Monarch Initiative" xsd:string
+property_value: http://purl.org/dc/elements/1.1/subject "Phenotypic abnormalities encountered in human disease" xsd:string
+property_value: http://purl.org/dc/elements/1.1/title "Human Phenotype Ontology" xsd:string
+property_value: http://purl.org/dc/terms/license https://hpo.jax.org/app/license
+property_value: IAO:0000700 HP:0000001
+logical-definition-view-relation: has_part
+
+[Term]
+id: HP:0000001
+name: All
+comment: Root of all terms in the Human Phenotype Ontology.
+xref: UMLS:C0444868
+
+[Term]
+id: HP:0000005
+name: Mode of inheritance
+alt_id: HP:0001453
+alt_id: HP:0001461
+def: "The pattern in which a particular genetic trait or disorder is passed from one generation to the next." [HPO:probinson]
+synonym: "Inheritance" EXACT []
+xref: UMLS:C1708511
+is_a: HP:0000001 ! All
+
+[Term]
+id: HP:0000118
+name: Phenotypic abnormality
+def: "A phenotypic abnormality." [HPO:probinson]
+comment: This is the root of the phenotypic abnormality subontology of the HPO.
+synonym: "Organ abnormality" EXACT []
+xref: UMLS:C4021819
+is_a: HP:0000001 ! All
+
+[Term]
+id: HP:0012823
+name: Clinical modifier
+alt_id: HP:0000004
+def: "This subontology is designed to provide terms to characterize and specify the phenotypic abnormalities defined in the Phenotypic abnormality subontology, with respect to severity, laterality, age of onset, and other aspects." [HPO:probinson]
+comment: Note that some of the terms, such as Intellectual disability, have children terms such as Severe intellectual disability that represent precomposed combinations of modifiers and phenotypic abnormality terms. This done where the medical community commonly uses these terms with a fixed meaning (for instance, the Intellectual disability terms are used with specific IQ ranges). For computational reasoning, the semantics are intended to be the same as if there was a combination of the phenotype term and the clinical modifier term.
+synonym: "Phenotypic modifier" EXACT []
+xref: UMLS:C4021064
+is_a: HP:0000001 ! All
+created_by: peter
+creation_date: 2014-06-06T06:34:24Z
+
+[Term]
+id: HP:0031797
+name: Clinical course
+def: "The course a disease typically takes from its onset, progression in time, and eventual resolution or death of the affected individual." []
+synonym: "Natural history of disease" RELATED []
+is_a: HP:0000001 ! All
+property_value: http://purl.org/dc/elements/1.1/date 2018-02-25T14:55:46Z xsd:dateTime
+created_by: peter
+
+[Term]
+id: HP:0032223
+name: Blood group
+def: "Any of the various types of human blood whose antigen characteristics determine compatibility in transfusion. While the ABO and Rhesus sytems are the most well known, there are in total about 300 different blood type antigens distributed across 34 different blood type systems." [PMID:26085552]
+comment: At present, there are 34 blood group systems recognized by the International Society for Blood Transfusion.
+is_a: HP:0000001 ! All
+property_value: http://purl.org/dc/elements/1.1/date 2019-01-24T11:33:51Z xsd:dateTime
+created_by: peter
+
+[Term]
+id: HP:0032443
+name: Past medical history
+def: "In a medical encounter, the physician generally will interview the patient about his or her current problem, and may perform additional testing. The past medical history (PMH) in contrast records information about the patient's medical, personal and family history that might be relevant to the presenting illness or to provide optimal clinical management. The PMH generally includes (if relevant) other major illnesses, hospitalizations, surgeries, injuries, allergies, gynecologic and obstetric history, family history, personal history including occupational history, alcohol and drug use, etc." []
+comment: This subontology of the HPO is not intended to provide all needed terms to describe the past medical history, but rather to be combined with other ontologies such as MONDO in order to capture information that is often needed to properly assess phenotypic findings related to a presenting medical problem.
+is_a: HP:0000001 ! All
+property_value: http://purl.org/dc/elements/1.1/date 2019-03-03T16:39:26Z xsd:dateTime
+created_by: peter
+
+[Term]
+id: HP:0040279
+name: Frequency
+def: "Class to represent frequency of phenotypic abnormalities within a patient cohort." []
+comment: Aligned with Orphanet
+is_a: HP:0000001 ! All
+created_by: ORCID:0000-0002-5316-1399
+
