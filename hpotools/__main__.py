@@ -4,9 +4,10 @@ import os
 import urllib.request
 import sqlite3
 import json
+import shutil
 from .cmd import *
 
-HPO_URL = "https://github.com/dridk/hpo2sqlite/releases/download/latest/hpo.db"
+from .settings import HPO_URL, HPOTOOLS_DIR
 
 
 class HpoParser(object):
@@ -52,13 +53,14 @@ subcommand are :
         parser.add_argument("--database", "-d", type=argparse.FileType("r"))
         args = parser.parse_args(argv)
 
-        dirpath = os.path.join(os.path.expanduser("~"), ".hpotools")
-        if not os.path.exists(dirpath):
-            os.mkdir(dirpath)
+        if not os.path.exists(HPOTOOLS_DIR):
+            os.mkdir(HPOTOOLS_DIR)
 
         if args.database is None:
             print("Downloading ", HPO_URL)
-            urllib.request.urlretrieve(HPO_URL, os.path.join(dirpath, "hpo.db"))
+            urllib.request.urlretrieve(HPO_URL, os.path.join(HPOTOOLS_DIR, "hpo.db"))
+        elif os.path.exists(args.database):
+            shutil.copyfile(args.database, os.path.join(HPOTOOLS_DIR, "hpo.db"))
 
     def build_cmd(self, argv):
         parser = argparse.ArgumentParser(
